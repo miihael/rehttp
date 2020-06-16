@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/PuerkitoBio/rehttp"
+	"github.com/miihael/rehttp"
 )
 
 func Example() {

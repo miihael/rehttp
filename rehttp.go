@@ -32,18 +32,8 @@
 // be prevented by setting PreventRetryWithBody to true on the Transport.
 // Doing so will disable retries when a request has a non-nil body.
 //
-// This package requires Go version 1.6+, since it uses the new
-// http.Request.Cancel field in order to cancel requests. It doesn't
-// implement the deprecated http.Transport.CancelRequest method
-// (https://golang.org/pkg/net/http/#Transport.CancelRequest).
-//
 // On Go1.7+, it uses the context returned by http.Request.Context
 // to check for cancelled requests.
-//
-// It should work on Go1.5, but only if there is no timeout set on the
-// *http.Client. Go's stdlib will return an error on the first request
-// if that's the case, because it requires a RoundTripper that
-// implements the CancelRequest method.
 //
 package rehttp
 
@@ -339,10 +329,7 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 		case <-time.After(delay):
 			attempt++
 		case <-done:
-			// request canceled by caller (post-1.7), don't retry
-			return nil, errors.New("net/http: request canceled")
-		case <-req.Cancel:
-			// request canceled by caller (pre-1.7), don't retry
+			// request canceled by caller, don't retry
 			return nil, errors.New("net/http: request canceled")
 		}
 	}

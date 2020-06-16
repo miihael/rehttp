@@ -1,5 +1,3 @@
-// +build go1.7
-
 package rehttp
 
 import "net/http"
